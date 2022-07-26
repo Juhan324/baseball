@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-WebgameApplication<webgame>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.baseball.webgame.WebgameApplication",
+            "projectName": "webgame",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
