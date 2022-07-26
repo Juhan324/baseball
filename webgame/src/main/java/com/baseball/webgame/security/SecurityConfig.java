@@ -32,7 +32,9 @@ public class SecurityConfig {
                 .and()
             .formLogin()
                 .loginPage("/login")
-                .loginProcessingUrl("/login_proc")
+                .loginProcessingUrl("/login_Proc")
+                .usernameParameter("id")
+                .passwordParameter("password")
                 .defaultSuccessUrl("/user_access")
                 .failureHandler(new AuthFailureHandler()) // 인증에 실패했을 때 보여주는 화면 url, 로그인 form으로 파라미터값 error=true로 보낸다.
                 .and()
