@@ -1,22 +1,20 @@
 package com.baseball.webgame.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.baseball.webgame.model.User;
+import com.baseball.webgame.model.UserVO;
 import com.baseball.webgame.service.UserService;
 
 @Controller
 public class UserController {
+    @Autowired
     private UserService userService;
-
-    public UserController(UserService userSerivce){
-        this.userService = userSerivce;
-    }
     
     @GetMapping
     public String root() {
@@ -55,7 +53,7 @@ public class UserController {
 
      */
     @PostMapping("/signUp")
-    public String signUp(User user) {
+    public String signUp(UserVO user) {
         userService.joinUser(user);
         return "redirect:/login";
     }
