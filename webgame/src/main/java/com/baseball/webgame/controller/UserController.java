@@ -18,7 +18,7 @@ public class UserController {
     
     @GetMapping
     public String root() {
-        return "redirect:/login";
+        return "redirect:/lobby";
     }
 
     /**
