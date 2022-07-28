@@ -10,15 +10,15 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
 
-<div id="username-page">
-    <div class="username-page-container">
+<div id="userNumber-page">
+    <div class="userNumber-page-container">
         <h1 class="title">상대가 맞출 숫자를 입력하세요</h1>
-        <form id="usernameForm" name="usernameForm" onsubmit="handleOnSubmit()">
+        <form id="userNumberForm" name="userNumberForm" onsubmit="handleOnSubmit()">
             <div class="form-group">
-                <input type="text" id="number" placeholder="Username" autocomplete="off" class="form-control" onblur="HandleOnInput(this)" maxlength="3"/>
+                <input type="text" id="number" placeholder="UserNumber" autocomplete="off" class="form-control" onblur="HandleOnInput(this)" maxlength="3"/>
             </div>
             <div class="form-group">
-                <button type="submit" class="accent username-submit">채팅 시작하기</button>
+                <button type="submit" class="accent userNumber-submit">채팅 시작하기</button>
             </div>
         </form>
     </div>
@@ -49,9 +49,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script th:src="@{/js/stomp.min.js}"></script>
 <script th:inline="javascript">
 
-    var usernamePage = document.querySelector('#username-page');
+    var userNumberPage = document.querySelector('#userNumber-page');
     var chatPage = document.querySelector('#chat-page');
-    var usernameForm = document.querySelector('#usernameForm');
+    var userNumberForm = document.querySelector('#userNumberForm');
     var messageForm = document.querySelector('#messageForm');
     var messageInput = document.querySelector('#message');
     var messageArea = document.querySelector('#messageArea');
@@ -71,7 +71,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
             alert("서로 다른 3자리 숫자를 입력해주세요.");
         }
         if(userNumber) {
-            usernamePage.classList.add('hidden');
+            userNumberPage.classList.add('hidden');
             chatPage.classList.remove('hidden');
 
             var socket = new SockJS('/ws');
@@ -87,7 +87,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
         // Subscribe to the Public Topic
         stompClient.subscribe('/topic/public', onMessageReceived);
 
-        // Tell your username to the server
+        // Tell your userNumber to the server
         stompClient.send("/app/chat.addUser",
             {},
             JSON.stringify({sender: username, type: 'JOIN'}) //
@@ -151,7 +151,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
         
     }
 
-    usernameForm.addEventListener('submit', connect, true)
+    userNumberForm.addEventListener('submit', connect, true)
     messageForm.addEventListener('submit', sendMessage, true)    
 </script>
 </body>
