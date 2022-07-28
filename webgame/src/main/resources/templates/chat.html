@@ -7,14 +7,15 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <title>Spring Boot WebSocket Chat Application</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
+
 <body>
 
 <div id="username-page">
     <div class="username-page-container">
         <h1 class="title">상대가 맞출 숫자를 입력하세요</h1>
-        <form id="usernameForm" name="usernameForm">
+        <form id="usernameForm" name="usernameForm" onsubmit="handleOnSubmit()">
             <div class="form-group">
-                <input type="text" id="number" placeholder="Username" autocomplete="off" class="form-control" />
+                <input type="text" id="number" placeholder="Username" autocomplete="off" class="form-control" onblur="HandleOnInput(this)" maxlength="3"/>
             </div>
             <div class="form-group">
                 <button type="submit" class="accent username-submit">채팅 시작하기</button>
@@ -44,8 +45,8 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
         </form>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script th:src="@{/js/sockjs.min.js}"></script>
+<script th:src="@{/js/stomp.min.js}"></script>
 <script th:inline="javascript">
 
     var usernamePage = document.querySelector('#username-page');
@@ -63,7 +64,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     function connect(event) {
         userNumber = document.querySelector('#number').value.trim();
-
+        numberList = userNumber.split("");
+        if(numberList.length<3 || numberList[0]==numberList[1]||numberList[1]==numberList[2]||numberList[2]==numberList[0]){
+            document.getElementById('number').focus();
+            userNumber=null;
+            alert("서로 다른 3자리 숫자를 입력해주세요.");
+        }
         if(userNumber) {
             usernamePage.classList.add('hidden');
             chatPage.classList.remove('hidden');
@@ -140,6 +146,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
         messageArea.appendChild(messageElement);
         messageArea.scrollTop = messageArea.scrollHeight;
+    }
+    function handleOnSubmit() {
+        
     }
 
     usernameForm.addEventListener('submit', connect, true)
