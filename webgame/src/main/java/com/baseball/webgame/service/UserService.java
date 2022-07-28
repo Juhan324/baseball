@@ -1,7 +1,5 @@
 package com.baseball.webgame.service;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baseball.webgame.mapper.UserMapper;
 import com.baseball.webgame.model.UserVO;
 
+import lombok.RequiredArgsConstructor;
 
 
 
+@RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
     
     
     @Transactional

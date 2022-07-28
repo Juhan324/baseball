@@ -24,9 +24,10 @@ public class GameController {
     }
     
     @GetMapping("/chat")
-    public ModelAndView chatGET(){
+    public ModelAndView chatGET(Model model){
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("chat");
+        model.addAttribute("loginedUser", sessionRegistry.getAllPrincipals().stream().map(o->((User)o).getUsername()).toList());
+        mv.setViewName("game");
         return mv;
     }
 

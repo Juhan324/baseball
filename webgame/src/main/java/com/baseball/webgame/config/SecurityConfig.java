@@ -11,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.baseball.webgame.handler.AuthFailureHandler;
-
 
 
 @Configuration
@@ -38,7 +36,7 @@ public class SecurityConfig {
                 .sessionRegistry(sessionRegistry())
                 .and().and()
             .authorizeRequests()
-                .antMatchers( "/login", "/singUp", "/access_denied", "/resources/**").permitAll() // 로그인 권한은 누구나, resources파일도 모든권한
+                .antMatchers( "/login", "/signUp", "/access_denied", "/resources/**").permitAll() // 로그인 권한은 누구나, resources파일도 모든권한
                 // USER, ADMIN 접근 허용
                 .anyRequest().authenticated()
                 .and()
@@ -47,9 +45,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login_Proc")
                 .usernameParameter("id")
                 .passwordParameter("password")
-                .successForwardUrl("/user_access")
-                .defaultSuccessUrl("/user_access")
-                .failureHandler(new AuthFailureHandler()) // 인증에 실패했을 때 보여주는 화면 url, 로그인 form으로 파라미터값 error=true로 보낸다.
+                .failureUrl("/access_denied")
                 .and()
             .csrf().disable();		//로그인 창
         return http.build();
