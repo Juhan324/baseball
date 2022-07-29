@@ -3,7 +3,7 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <meta charset="UTF-8">
-	<title>Chating</title>
+	<title>Number Baseball Web Game</title>
 	<style>
 		*{
 			margin:0;
@@ -17,17 +17,16 @@
 		.container h1{
 			text-align: left;
 			padding: 5px 5px 5px 15px;
-			color: #FFBB00;
-			border-left: 3px solid #FFBB00;
+			color: #000;
 			margin-bottom: 20px;
 		}
-		.chating{
+		.chatting{
 			background-color: #fff;
 			width: 500px;
 			height: 500px;
 			overflow: auto;
 		}
-		.chating p{
+		.chatting p{
 			color: #000;
 			text-align: left;
 		}
@@ -43,21 +42,8 @@
 
 <script th:inline="javascript">
 	var ws;
-
+	var turn = 0;
 	var target="";
-
-	function randomUser(){
-		var userList = [];
-		userList = [[${#logineduser}]];
-		if(userList<1){
-			return false;
-		}else if(userList[Math.floor(Math.random()*userList.length)]==[[${#authentication.name}]]){
-			randomUser();
-		}else {
-			return userList[Math.floor(Math.random()*userList.length)];
-		}
-		
-	}
 
 	function wsOpen(){
 		ws = new WebSocket("ws://" + location.host + "/gaming");
@@ -70,23 +56,34 @@
 			register();
 			//소켓이 열리면 초기화 세팅하기
 		}
-		
+		//메세지 수신 시 작동
 		ws.onmessage = function(data) {
 			var msg = data.data;
 			if(msg != null && msg.trim() != ''){
 				console.log(msg.slice(msg.length-7));
+				//message 내용 뒤에 un이 붙어있을경우 user와 매칭성공 
 				if(msg.slice(msg.length-2)=="un"){
 					target = msg.slice(0,msg.length-2);
 					msg = "vs "+target;
+				//message 내용이 You Win이면 승리
 				}
 				if(msg=="You Win!"){
-					$("#chating").append("<p style='text-align:center;'>" + msg + "</p>");
+					$("#chatting").append("<p style='text-align:center;'>" + msg + "</p>");
 					gameOver();
+				//Win이 아니면 일반 메세지 출력
 				}else{
-				$("#chating").append("<p style='text-align:right;'>" + msg + "</p>");
+					$("#chatting").append("<p style='text-align:right;'>" + msg + "</p>");
+					if(turn>0){
+						if(turn%2==1){
+							$("#inputAnswer").hide();
+							turn++;
+						}else{
+							$("#inputAnswer").show();
+						}
+					}
 					if(msg.slice(msg.length-7)=="Win</p>"){
-						lose();
-						$("#chating").append("<p style='text-align:center;'>You Lose!</p>");
+						win();
+						$("#chatting").append("<p style='text-align:center;'>You Lose!</p>");
 						gameOver();
 					}
 				}
@@ -94,20 +91,15 @@
 		}
 	}
 
+	//게임 종료
 	function gameOver(){
-		$("#chating").append("<p>3초뒤 자동 종료됩니다.</p>");
-		$("#chating").append("<p>3....</p>");
-		setTimeout(function() {
-			$("#chating").append("<p>2....</p>");
-		}, 1000);
-		setTimeout(function() {	
-			$("#chating").append("<p>1....</p>");
-		}, 2000);
+		$("#chatting").append("<p>3초 뒤 자동 종료됩니다.</p>");
 		setTimeout(function() {
 			window.location.href = '/'
 		}, 3000);
 	}
 
+	//상대가 맞춰야할 숫자 등록
 	function inputNumber(){
 		var userNumber = $("#userNumber").val().trim();
         var numberList = userNumber.split("");
@@ -122,29 +114,32 @@
 		}
 	}
 
-	function register() { //메시지 수신을 위한 서버에 id 등록하기
+	 //메시지 수신을 위한 서버에 id 등록하기
+	function register() {
 		console.log("register");
 		var msg = {
-			type : "register", //메시지 구분하는 구분자 - 상대방 아이디와 메시지 포함해서 보냄
+			type : "register",
 			userid : [[${#authentication.name}]]
 		};
 		ws.send(JSON.stringify(msg));
 	}
 
-	function numberRegister() { //메시지 수신을 위한 서버에 id 등록하기
+	//입력한 숫자를 서버에 등록
+	function numberRegister() { 
 		console.log("numberRegister");
 		var msg = {
-			type : "numberRegister", //메시지 구분하는 구분자 - 상대방 아이디와 메시지 포함해서 보냄
+			type : "numberRegister",
 			userid : [[${#authentication.name}]],
 			userNumber : $("#userNumber").val()
 		};
 		ws.send(JSON.stringify(msg));
 	}
 
-	function lose() { //메시지 수신을 위한 서버에 id 등록하기
-		console.log("lose");
+	//승리. 상대에게는 lose 메세지 전송
+	function win() {
+		console.log("win");
 		var msg = {
-			type : "lose", //메시지 구분하는 구분자 - 상대방 아이디와 메시지 포함해서 보냄
+			type : "win", 
 			userid : [[${#authentication.name}]],
 			target : target,
 			message : "You Win!"
@@ -152,6 +147,7 @@
 		ws.send(JSON.stringify(msg));
 	}
 
+	//상대방 숫자 예측
 	function sendAnswer() {
 		let num = $("#answering").val().trim();
         var numberList = num.split("");
@@ -161,14 +157,15 @@
 		}else{
 			console.log("sendAnswer");
 			var msg = {
-				type : "answer", //메시지 구분하는 구분자 - 상대방 아이디와 메시지 포함해서 보냄
+				type : "answer",
 				userid : [[${#authentication.name}]],
 				target : target, //userid
 				message : $("#answering").val()
 			};
 			ws.send(JSON.stringify(msg));
-			$("#chating").append("<p style='text-align: right;'>"+"나 : " + $("#answering").val() + "</p>");
+			$("#chatting").append("<p style='text-align: right;'>"+"나 : " + $("#answering").val() + "</p>");
 			$('#answering').val("");
+			turn = turn+1;
 		}
 	};
 
@@ -180,13 +177,15 @@
 <body>
 	<div id="container" class="container">
 		<h1>Number Baseball Web Game</h1>
-		<div id="chating" class="chating">
+		<div id="chatting" class="chatting">
 		</div>
 		
 		<div id="inputNumber">
 			<table class="inputTable">
 				<tr>
 					<th>상대가 맞출 숫자를 입력하십시오.</th>
+				</tr>
+				<tr>
 					<th><input type="text" oninput="this.value = this.value.replace(/[^1-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="3" id="userNumber"></th>
 					<th><button onclick="inputNumber()" id="startBtn">정답 등록</button></th>
 				</tr>
