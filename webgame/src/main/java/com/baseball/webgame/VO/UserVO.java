@@ -1,4 +1,4 @@
-package com.baseball.webgame.model;
+package com.baseball.webgame.VO;
 
 import java.util.Collection;
 import java.util.Collections;

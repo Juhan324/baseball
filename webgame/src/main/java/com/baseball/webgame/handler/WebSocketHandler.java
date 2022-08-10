@@ -95,7 +95,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			String number = object.getString("userNumber");
 			//아이디랑 Session이랑 매핑
 			userMap.get(user).setNumber(number);
-			//승리. 상대에게 승리 알림
+		
+		//승리. 상대에게 승리 알림
 		}else if(type.equals("win")){
 			String target = object.getString("target");
 			WebSocketSession ws = (WebSocketSession)userMap.get(target).getObj();

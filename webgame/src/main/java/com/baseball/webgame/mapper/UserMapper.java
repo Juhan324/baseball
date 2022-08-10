@@ -4,7 +4,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import com.baseball.webgame.model.UserVO;
+
+import com.baseball.webgame.VO.UserVO;
 
 @Mapper
 public interface UserMapper {
