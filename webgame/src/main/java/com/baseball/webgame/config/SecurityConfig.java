@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -47,7 +48,7 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .failureUrl("/access_denied")
                 .and()
-            .csrf().disable();		//로그인 창
+            .csrf().disable();
         return http.build();
     }
 

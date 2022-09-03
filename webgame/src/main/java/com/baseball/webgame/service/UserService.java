@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baseball.webgame.VO.UserVO;
 import com.baseball.webgame.mapper.UserMapper;
-import com.baseball.webgame.model.UserVO;
 
 import lombok.RequiredArgsConstructor;
 
